@@ -15,6 +15,13 @@
         <div class="row gx-5">
             <div class="col">
                 <div class="registration-cont p-3 border bg-light">
+                    {% with messages = get_flashed_messages() %}
+                        {% if messages %}
+                            {% for message in messages %}
+                                <p>{{ message }}</p>
+                            {% endfor %}
+                        {% endif %}
+                    {% endwith %}
                     <form action="/register/user" method="post">
                         <div class="mb-3">
                             <label for="first_name" class="form-label">First Name</label>
