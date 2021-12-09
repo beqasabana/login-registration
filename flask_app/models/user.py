@@ -1,6 +1,7 @@
 from flask_app.config.mysqlconnection import connectToMySQL
 from flask import flash
 import re
+from flask_app.controllers import users
 
 EMAIL_REGEX = re.compile(r'^[a-zA-Z0-9.+_-]+@[a-zA-Z0-9._-]+\.[a-zA-Z]+$')
 
@@ -30,7 +31,9 @@ class User:
     def get_user_by_email(cls, data):
         query = "SELECT * FROM users WHERE users.email = %(email)s;"
         user = connectToMySQL('user_schema').query_db(query, data)
-        return cls(user[0])
+        if user:
+            return cls(user[0])
+        return False
 
     @classmethod
     def get_all(cls):
@@ -45,13 +48,13 @@ class User:
     def validate_email(form):
         is_valid = True
         if not EMAIL_REGEX.match(form['email']):
-            flash("Invalid Email Address!")
+            flash("Invalid Email Address!", 'registration-error')
             is_valid = False
             return is_valid
         all_users_in_db = User.get_all()
         for one_user in all_users_in_db:
             if one_user.email == form['email']:
-                flash("Email address already exists use different email address.")
+                flash("Email address already exists use different email address.", 'registration-error')
                 is_valid = False
         return is_valid
 
@@ -60,16 +63,33 @@ class User:
         is_valid = True
         if len(form['first_name']) < 2:
             is_valid = False
-            flash("First Name must be at least 2 Characters.")
+            flash("First Name must be at least 2 Characters.", 'registration-error')
         if len(form['last_name']) < 2:
             is_valid = False
-            flash("Last Name must be at least 2 Characters.")
+            flash("Last Name must be at least 2 Characters.", 'registration-error')
         is_valid = User.validate_email(form)
         if len(form['password']) < 6:
-            flash("Password is too short. Password should be at least 6 characters.")
+            flash("Password is too short. Password should be at least 6 characters.", 'registration-error')
             is_valid = False
             return is_valid
         if form['password'] != form['password-conf']:
-            flash("Password does not match.")
+            flash("Password does not match.", 'registration-error')
             is_valid = False
         return is_valid
+
+    @staticmethod
+    def validate_login(form):
+        is_valid = True
+        data = {
+            'email': form['email']
+        }
+        user = User.get_user_by_email(data)
+        if not user:
+            is_valid = False
+            flash("Invalid Email Address or Password.", 'login-error')
+            return is_valid
+        if not users.bcrypt.check_password_hash(user.password, form['password']):
+            is_valid = False
+            flash("Invalid Email Address or Password.", 'login-error')
+            return is_valid
+        return user.id

@@ -7,12 +7,15 @@ bcrypt = Bcrypt(app)
 
 @app.route('/')
 def index():
-    print(session['user'])
     return render_template('index.html')
 
 @app.route('/success')
 def success():
-    return render_template('success.html')
+    if 'user' in session:
+        return render_template('success.html')
+    else:
+        flash("You are not logged in!", 'not-loggedin')
+        return redirect('/')
 
 @app.route('/register/user', methods=['POST'])
 def register_user():
@@ -27,3 +30,15 @@ def register_user():
     }
     session['user'] = User.save(data)
     return redirect('/success')
+
+@app.route('/login', methods=['POST'])
+def login():
+    if User.validate_login(request.form):
+        session['user'] = User.validate_login(request.form)
+        return redirect('/success')
+    return redirect('/')
+
+@app.route('/logout')
+def logout():
+    session.clear()
+    return render_template('index.html')

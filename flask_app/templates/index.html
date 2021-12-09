@@ -12,10 +12,15 @@
 <body>
 
     <div class="container overflow-hidden">
+        {% with messages = get_flashed_messages(category_filter=["not-loggedin"]) %}
+                        {% if messages %}
+                                <p>{{ messages[0] }}</p>
+                        {% endif %}
+                    {% endwith %}
         <div class="row gx-5">
             <div class="col">
                 <div class="registration-cont p-3 border bg-light">
-                    {% with messages = get_flashed_messages() %}
+                    {% with messages = get_flashed_messages(category_filter=["registration-error"]) %}
                         {% if messages %}
                             {% for message in messages %}
                                 <p>{{ message }}</p>
@@ -50,6 +55,11 @@
 
             <div class="col">
                 <div class="login-cont p-3 border bg-light">
+                    {% with messages = get_flashed_messages(category_filter=["login-error"]) %}
+                        {% if messages %}
+                                <p>{{ messages[0] }}</p>
+                        {% endif %}
+                    {% endwith %}
                     <form action="/login" method="post">
                         <div class="mb-3">
                             <label for="email" class="form-label">Email address</label>
