@@ -12,7 +12,12 @@ def index():
 @app.route('/success')
 def success():
     if 'user' in session:
-        return render_template('success.html')
+        data = {
+            'id': session['user']
+        }
+        active_user = User.get_user_by_id(data)
+        all_users = User.get_all()
+        return render_template('success.html', active_user=active_user, all_users=all_users)
     else:
         flash("You are not logged in!", 'not-loggedin')
         return redirect('/')

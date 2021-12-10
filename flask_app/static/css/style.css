@@ -1,3 +1,36 @@
 .container {
     margin-top: 50px;
 }
+
+.nav-pills > a, .nav-pills > h2 {
+    margin: auto 10px;
+}
+
+.success {
+    margin-top: 15px;
+}
+
+.received-messages {
+    border-right: 1.5px solid black;
+}
+
+.send-message {
+    border-left: 1.5px solid black;
+}
+
+.form-label {
+    margin-bottom: 0;
+}
+
+.message-form > div {
+    margin-top: 0;
+}
+
+.send-btn-cont {
+    width: fit-content;
+    flex: 1;
+}
+
+.message-cont {
+    flex: 4;
+}

@@ -2,6 +2,7 @@ from flask_app.config.mysqlconnection import connectToMySQL
 from flask import flash
 import re
 from flask_app.controllers import users
+from flask_app.models.message import Message
 
 EMAIL_REGEX = re.compile(r'^[a-zA-Z0-9.+_-]+@[a-zA-Z0-9._-]+\.[a-zA-Z]+$')
 
@@ -14,6 +15,8 @@ class User:
         self.password = data['password']
         self.created_at = data['created_at']
         self.updated_at = data['updated_at']
+        self.messages_sent = []
+        self.messages_received = []
 
     @classmethod
     def save(cls, data):
@@ -43,6 +46,10 @@ class User:
         for user in users_in_db:
             users_cls.append(cls(user))
         return users_cls
+
+    @classmethod
+    def send_message(cls, data):
+        return
 
     @staticmethod
     def validate_email(form):
