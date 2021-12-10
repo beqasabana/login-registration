@@ -47,10 +47,6 @@ class User:
             users_cls.append(cls(user))
         return users_cls
 
-    @classmethod
-    def send_message(cls, data):
-        return
-
     @staticmethod
     def validate_email(form):
         is_valid = True

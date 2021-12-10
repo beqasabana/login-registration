@@ -31,9 +31,15 @@
 
             <div class="col send-message">
                 <div class="login-cont p-3 border bg-light">
+                    {% with messages = get_flashed_messages(category_filter=["empty-message"]) %}
+                        {% if messages %}
+                                <p>{{ messages[0] }}</p>
+                        {% endif %}
+                    {% endwith %}
+
                     {% for one_user in all_users %}
                         {% if one_user.id != active_user.id %}
-                            <form class="message-form row g-3" action="/send/message/to/{{ one_user.id }}/from/{{ active_user.id }}">
+                            <form class="message-form row g-3" action="/send/message/to/{{ one_user.id }}" method="post">
                                 <label for="message" class="form-label">Message {{ one_user.first_name }}:</label>
                                 <div class="message-cont col">
                                     <textarea class="form-control" name="message" rows="1"></textarea>
