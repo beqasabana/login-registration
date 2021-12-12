@@ -15,3 +15,11 @@ def send_message(receiver):
     }
     Message.save(data)
     return redirect('/success')
+
+@app.route("/delete/message/<int:message_id>")
+def delete_message(message_id):
+    data = {
+        'id': message_id
+    }
+    Message.delete(data)
+    return redirect('/success')

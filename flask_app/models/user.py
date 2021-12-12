@@ -2,7 +2,8 @@ from flask_app.config.mysqlconnection import connectToMySQL
 from flask import flash
 import re
 from flask_app.controllers import users
-from flask_app.models.message import Message
+from flask_app.models import message
+
 
 EMAIL_REGEX = re.compile(r'^[a-zA-Z0-9.+_-]+@[a-zA-Z0-9._-]+\.[a-zA-Z]+$')
 
@@ -17,6 +18,24 @@ class User:
         self.updated_at = data['updated_at']
         self.messages_sent = []
         self.messages_received = []
+
+    def get_received_messages(self):
+        query = "SELECT * FROM users LEFT JOIN messages ON users.id = messages.receiver_id WHERE users.id = %(id)s;"
+        data = {
+            'id': self.id
+        }
+        results = connectToMySQL('user_schema').query_db(query, data)
+        for one_result in results:
+            data = {
+                'id': one_result['messages.id'],
+                'sender_id': one_result['sender_id'],
+                'receiver_id': one_result['receiver_id'],
+                'message': one_result['message'],
+                'created_at': one_result['messages.created_at'],
+                'updated_at': one_result['messages.updated_at']
+            }
+            self.messages_received.append(message.Message(data))
+        return
 
     @classmethod
     def save(cls, data):

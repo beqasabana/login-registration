@@ -25,10 +25,20 @@
         <div class="row gx-5">
             <div class="col received-messages">
                 <div class="registration-cont p-3 border bg-light">
-                    <p>received messages</p>
+                    <h3>You Have {{ active_user.messages_received|length }} New Messages</h3>
+                    {% for message in active_user.messages_received %}
+                        <h5>{{ message.sender.first_name }} said {{ ((current_time - message.created_at)|string)[0:-7] }} ago:</h5>
+                        <div class="cont-inline">
+                            <div class="received-message-cont col">
+                                <p>{{ message.message }}</p>
+                            </div>
+                            <div class="delete-btn-cont col">
+                                <a class="btn btn-primary mb-3" href="/delete/message/{{ message.id }}">Delete</a>
+                            </div>
+                        </div>
+                    {% endfor %}
                 </div>
             </div>
-
             <div class="col send-message">
                 <div class="login-cont p-3 border bg-light">
                     {% with messages = get_flashed_messages(category_filter=["empty-message"]) %}
@@ -36,7 +46,6 @@
                                 <p>{{ messages[0] }}</p>
                         {% endif %}
                     {% endwith %}
-
                     {% for one_user in all_users %}
                         {% if one_user.id != active_user.id %}
                             <form class="message-form row g-3" action="/send/message/to/{{ one_user.id }}" method="post">

@@ -34,3 +34,17 @@
 .message-cont {
     flex: 4;
 }
+
+.cont-inline {
+    display: flex;
+}
+
+
+.delete-btn-cont {
+    width: fit-content;
+    flex: 1;
+}
+
+.received-message-cont {
+    flex: 3;
+}

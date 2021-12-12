@@ -2,6 +2,7 @@ from flask_app import app
 from flask import render_template, redirect, request, session, flash
 from flask_app.models.user import User
 from flask_bcrypt import Bcrypt
+from datetime import datetime
 
 bcrypt = Bcrypt(app)
 
@@ -16,8 +17,11 @@ def success():
             'id': session['user']
         }
         active_user = User.get_user_by_id(data)
+        active_user.get_received_messages()
+        print(active_user.messages_received)
         all_users = User.get_all()
-        return render_template('success.html', active_user=active_user, all_users=all_users)
+        current_time = datetime.now()
+        return render_template('success.html', active_user=active_user, all_users=all_users, current_time = current_time)
     else:
         flash("You are not logged in!", 'not-loggedin')
         return redirect('/')
@@ -46,4 +50,4 @@ def login():
 @app.route('/logout')
 def logout():
     session.clear()
-    return render_template('index.html')
+    return redirect('/')
